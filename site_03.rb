@@ -12,30 +12,34 @@ def deput (site)
 	sites << site + node.values[0]
 	puts sites	
 	end
-end  
-
-def deput_name (site)
-
 	page = Nokogiri::HTML(open(site))  
 	names = [] #initialise les noms dans un tableau
 	page.xpath('//span[@class="list_nom"]').each do |node|
 		names << node.text.gsub('\n','').gsub(' ','')
-		puts names	
+		names	
 	end
-end  
-
-def get_deputy_mail(page)
-
-  deputy_mail = ''
-  entry_page = Nokogiri::HTML(open(page))
-  entry_page.xpath('//li/a').each do |node|
-    # binding.pry
-    if node.text.include?('@assem')
-      deputy_mail = node.text
-    end
-  end
-  deputy_mail
+	binding.pry
+	  deputy_mail = []
+	  sites.each do |a|
+	  entry_page = Nokogiri::HTML(open(a))
+	  entry_page.xpath('//li/ul/li/a[@href]').each do |node|
+	    if node.text.include?('@assem')
+	      deputy_mail << node.text
+	      break
+	    end
+	  end
+	  #binding.pry
+	  puts deputy_mail
+	end
+	binding.pry
+ 	 deputy = {} #initialise les 2 arrays dans un hash
+	i = 0 
+	names.each do |key| #key retourne la clé d'une valeur donnée
+  	deputy["#{key}"]= deputy_mail[i] #pour chaque clé de 'currencies_values' on associe le [i] correspondant de 'values' 
+  	i += 1 
+	end
+	puts deputy
 end
 
 
-deput_name ('https://www.nosdeputes.fr/deputes')
+deput('https://www.nosdeputes.fr/deputes')
